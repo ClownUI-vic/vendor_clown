@@ -1,46 +1,35 @@
-PRODUCT_VERSION_MAJOR = 22
-PRODUCT_VERSION_MINOR = 1
-
-ifeq ($(LINEAGE_VERSION_APPEND_TIME_OF_DAY),true)
-    LINEAGE_BUILD_DATE := $(shell date -u +%Y%m%d_%H%M%S)
-else
-    LINEAGE_BUILD_DATE := $(shell date -u +%Y%m%d)
-endif
-
-# Set LINEAGE_BUILDTYPE from the env RELEASE_TYPE, for jenkins compat
-
-ifndef LINEAGE_BUILDTYPE
-    ifdef RELEASE_TYPE
-        # Starting with "LINEAGE_" is optional
-        RELEASE_TYPE := $(shell echo $(RELEASE_TYPE) | sed -e 's|^LINEAGE_||g')
-        LINEAGE_BUILDTYPE := $(RELEASE_TYPE)
-    endif
-endif
-
-# Filter out random types, so it'll reset to UNOFFICIAL
-ifeq ($(filter RELEASE NIGHTLY SNAPSHOT EXPERIMENTAL,$(LINEAGE_BUILDTYPE)),)
-    LINEAGE_BUILDTYPE := UNOFFICIAL
-    LINEAGE_EXTRAVERSION :=
-endif
-
-ifeq ($(LINEAGE_BUILDTYPE), UNOFFICIAL)
-    ifneq ($(TARGET_UNOFFICIAL_BUILD_ID),)
-        LINEAGE_EXTRAVERSION := -$(TARGET_UNOFFICIAL_BUILD_ID)
-    endif
-endif
-
-LINEAGE_VERSION_SUFFIX := $(LINEAGE_BUILD_DATE)-$(LINEAGE_BUILDTYPE)$(LINEAGE_EXTRAVERSION)-$(LINEAGE_BUILD)
+CLOWN_MOD_VERSION := Reborn
+CLOWN_ANDROID = 15.1
+CLOWN_BUILD_TYPE ?= COMMUNITY
+CLOWN_MAINTAINER ?= UNKNOWN
 
 # Internal version
-LINEAGE_VERSION := $(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(LINEAGE_VERSION_SUFFIX)
+LINEAGE_VERSION := ClownUI-$(CLOWN_MOD_VERSION)-$(CLOWN_ANDROID)-$(LINEAGE_BUILD)-$(CLOWN_BUILD_TYPE)-$(shell date +%Y%m%d)
 
 # Display version
-LINEAGE_DISPLAY_VERSION := $(PRODUCT_VERSION_MAJOR)-$(LINEAGE_VERSION_SUFFIX)
+LINEAGE_DISPLAY_VERSION := v$(CLOWN_ANDROID)-$(shell date +%Y%m%d)
+CLOWN_VERSION:= $(LINEAGE_VERSION)
 
-# LineageOS version properties
+# Official Devies
+ifeq ($(CLOWN_BUILD_TYPE), OFFICIAL)
+   LIST = $(shell cat official/clown.devices)
+    ifeq ($(filter $(LINEAGE_BUILD), $(LIST)), $(LINEAGE_BUILD))
+      IS_OFFICIAL=true
+      CLOWN_BUILD_TYPE := OFFICIAL
+    endif
+    ifneq ($(IS_OFFICIAL), true)
+       CLOWN_BUILD_TYPE := COMMUNITY
+       $(error Device is not official "$(LINEAGE_BUILD)")
+    endif
+endif
+
+# ClownUI version properties
 PRODUCT_SYSTEM_PROPERTIES += \
-    ro.lineage.version=$(LINEAGE_VERSION) \
-    ro.lineage.display.version=$(LINEAGE_DISPLAY_VERSION) \
-    ro.lineage.build.version=$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR) \
-    ro.lineage.releasetype=$(LINEAGE_BUILDTYPE) \
-    ro.modversion=$(LINEAGE_VERSION)
+    ro.clown.version=$(CLOWN_MOD_VERSION) \
+    ro.clown.buildtype=$(CLOWN_BUILD_TYPE) \
+    ro.clown.device=$(LINEAGE_BUILD) \
+    ro.clown.display.version=$(LINEAGE_DISPLAY_VERSION) \
+    ro.clown.android=$(CLOWN_ANDROID) \
+    ro.modversion=$(CLOWN_MOD_VERSION) \
+    ro.aosp.revision=$(AOSP_REVISION) \
+    ro.clown.maintainer=$(CLOWN_MAINTAINER)

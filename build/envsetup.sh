@@ -6,8 +6,8 @@ function check_product()
         echo "Couldn't locate the top of the tree. Try setting TOP." >&2
         return
     fi
-    if (echo -n $1 | grep -q -e "^lineage_") ; then
-        LINEAGE_BUILD=$(echo -n $1 | sed -e 's/^lineage_//g')
+    if (echo -n $1 | grep -q -e "^clown_") ; then
+        LINEAGE_BUILD=$(echo -n $1 | sed -e 's/^clown_//g')
     else
         LINEAGE_BUILD=
     fi
@@ -26,7 +26,7 @@ function brunch()
 {
     breakfast $*
     if [ $? -eq 0 ]; then
-        mka bacon
+        mka clown
     else
         echo "No such item in brunch menu. Try 'breakfast'"
         return 1
@@ -53,7 +53,7 @@ function breakfast()
                 variant="userdebug"
             fi
 
-            lunch lineage_$target-$aosp_target_release-$variant
+            lunch clown_$target-$aosp_target_release-$variant
         fi
     fi
     return $?
@@ -699,7 +699,7 @@ function cmka() {
     if [ ! -z "$1" ]; then
         for i in "$@"; do
             case $i in
-                bacon|otapackage|systemimage)
+                clown|otapackage|systemimage)
                     mka installclean
                     mka $i
                     ;;
