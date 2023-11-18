@@ -1,5 +1,6 @@
 # Allow vendor/extra to override any property by setting it first
 $(call inherit-product-if-exists, vendor/extra/product.mk)
+$(call inherit-product, vendor/lineage/config/clown.mk)
 $(call inherit-product, vendor/addons/clown.mk)
 
 # Pixel additions
