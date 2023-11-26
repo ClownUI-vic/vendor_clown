@@ -1,6 +1,7 @@
 # ClownUI packages
 PRODUCT_PACKAGES += \
     GameSpace \
+    OmniJaws \
     OmniStyle
 
 # BtHelper
