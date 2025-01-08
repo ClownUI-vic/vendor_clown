@@ -1,5 +1,5 @@
 # ClownUI packages
-PRODUCT_PACKAGES += \
+# PRODUCT_PACKAGES += \
     GameSpace
 
 # Cloned app exemption
@@ -17,7 +17,7 @@ endif
 
 # DeviceAsWebcam
 ifeq ($(TARGET_BUILD_DEVICE_AS_WEBCAM), true)
-    PRODUCT_PACKAGES += \
+   PRODUCT_PACKAGES += \
         DeviceAsWebcam
     PRODUCT_VENDOR_PROPERTIES += \
         ro.usb.uvc.enabled=true
